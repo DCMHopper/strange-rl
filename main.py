@@ -2,13 +2,14 @@
 import copy
 import tcod
 
+import color
 from engine import Engine
 import entity_factories
 from procgen import generate_dungeon
 
 def main() -> None:
 	screen_width = 64
-	screen_height = 69
+	screen_height = 71
 
 	map_width = 64
 	map_height = 64
@@ -38,6 +39,11 @@ def main() -> None:
 
 	engine.update_fov()
 
+	engine.message_log.add_message(
+		"Somewhere in this asteroid's wretched tunnels, the notorious Pirate Captain Morgan makes his escape.",
+		color.welcome_text
+	)
+
 	with tcod.context.new_terminal(
 		screen_width,
 		screen_height,
@@ -48,9 +54,11 @@ def main() -> None:
 		root_console = tcod.Console(screen_width, screen_height, order="F")
 
 		while True:
-			engine.render(console=root_console, context=context)
+			root_console.clear()
+			engine.event_handler.on_render(console=root_console)
+			context.present(root_console)
 
-			engine.event_handler.handle_events()
+			engine.event_handler.handle_events(context)
 
 
 
