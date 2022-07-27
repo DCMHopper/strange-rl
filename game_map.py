@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 import numpy as np
 from tcod.console import Console
-from entity import Actor
+from entity import Actor, Item
 import tile_types
 
 if TYPE_CHECKING:
@@ -23,7 +23,6 @@ class GameMap:
 	@property
 	def game_map(self) -> GameMap:
 		return self
-	
 
 	@property
 	def actors(self) -> Iterator[Actor]:
@@ -32,7 +31,14 @@ class GameMap:
 			for entity in self.entities
 			if isinstance(entity, Actor) and entity.is_alive
 		)
-	
+
+	@property
+	def items(self) -> Iterator[Item]:
+		yield from (
+			entity
+			for entity in self.entities
+			if isinstance(entity, Item)
+		)
 
 	def get_blocking_entity_at_location(self, location_x: int, location_y: int) -> Optional[Entity]:
 		for entity in self.entities:
@@ -57,7 +63,7 @@ class GameMap:
 	Else draw it as "SHROUD"
 	"""
 	def render(self, console: Console) -> None:
-		console.tiles_rgb[0:self.width, 0:self.height] = np.select(
+		console.rgb[0:self.width, 0:self.height] = np.select(
 			condlist = [self.visible, self.explored],
 			choicelist = [self.tiles["light"], self.tiles["dark"]],
 			default = tile_types.SHROUD
