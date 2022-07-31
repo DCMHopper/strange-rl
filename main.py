@@ -10,16 +10,16 @@ from procgen import generate_dungeon
 
 def main() -> None:
 	screen_width = 64
-	screen_height = 71
+	screen_height = 72
 
 	map_width = 64
 	map_height = 64
 
 	room_max_size = 16
-	room_min_size = 4
+	room_min_size = 8
 	max_rooms = 32
-	max_monsters_per_room = 2
-	max_items_per_room = 1
+	max_monsters_per_room = 3
+	max_items_per_room = 5
 
 	tileset = tcod.tileset.load_tilesheet(
 		"tiles.png",32,8,tcod.tileset.CHARMAP_TCOD

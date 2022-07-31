@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import List, Tuple, TYPE_CHECKING
+import random
+from typing import List, Optional, Tuple, TYPE_CHECKING
 import numpy as np
 import tcod
-from actions import Action, MeleeAction, MovementAction, WaitAction
+from actions import Action, BumpAction, MeleeAction, MovementAction, WaitAction
 
 if TYPE_CHECKING:
 	from entity import Actor
@@ -33,6 +34,30 @@ class BaseAI(Action):
 
 		return [(index[0], index[1]) for index in path]
 
+class ConfusedAI(BaseAI):
+	def __init__(self, entity: Actor, previous_ai: Optional[BaseAI], ticks: int):
+		super().__init__(entity)
+		self.previous_ai = previous_ai
+		self.ticks = ticks
+
+	def perform(self) -> None:
+		if self.ticks <= 0:
+			self.engine.message_log.add_message(f"{self.entity.name.capitalize()} shakes it off.")
+			self.entity.ai = self.previous_ai
+
+		else:
+			dx, dy = random.choice([
+				(-1, -1),
+				(0, -1),
+				(1, -1),
+				(-1, 0),
+				(1, 0),
+				(-1, 1),
+				(0, 1),
+				(1, 1)
+			])
+			self.ticks -= 1
+			return BumpAction(self.entity, dx, dy).perform()
 
 class HostileAI(BaseAI):
 	def __init__(self, entity: Actor):

@@ -43,7 +43,7 @@ class Engine:
 	def render(self, console: Console) -> None:
 		self.game_map.render(console)
 
-		self.message_log.render(console = console, x = 18, y = 64, width = 48, height = 6)
+		self.message_log.render(console = console, x = 8, y = 65, width = 48, height = 6)
 
 		render_bar(console = console, current_value = self.player.fighter.hp, max_value = self.player.fighter.max_hp, total_width = 24)
 

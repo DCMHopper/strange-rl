@@ -43,22 +43,33 @@ def place_entities(
 	number_of_monsters = random.randint(0, max_monsters)
 	number_of_items = random.randint(0, max_items)
 
+	room_theme = random.randint(1,2)
+
 	for i in range(number_of_monsters):
 		x = random.randint(room.x1 + 1, room.x2 - 1)
 		y = random.randint(room.y1 + 1, room.y2 - 1)
 
 		if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
 			if random.random() < 0.8:
-				entity_factories.junkie.spawn(dungeon, x, y)
+				entity_factories.junkie.spawn(dungeon, x, y) if room_theme == 1 else entity_factories.dust_goon.spawn(dungeon, x, y)
 			else:
-				entity_factories.roider.spawn(dungeon, x, y)
+				entity_factories.roider.spawn(dungeon, x, y) if room_theme == 1 else entity_factories.dust_sicario.spawn(dungeon, x, y)
 
 	for i in range(number_of_items):
 		x = random.randint(room.x1 + 1, room.x2 - 1)
 		y = random.randint(room.y1 + 1, room.y2 - 1)
 
 		if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-			entity_factories.smart_bandage.spawn(dungeon, x, y)
+			item_chance = random.random()
+
+			if item_chance < 0.4:
+				entity_factories.smart_bandage.spawn(dungeon, x, y)
+			elif item_chance < 0.9:
+				entity_factories.explosive_grenade.spawn(dungeon, x, y)
+			elif item_chance < 0.99:
+				entity_factories.mace.spawn(dungeon, x, y)
+			else:
+				entity_factories.printed_gun.spawn(dungeon, x, y)
 
 # returns an L-shaped tunnel between two points
 def tunnel_between( start: Tuple[int, int], end: Tuple[int, int] ) -> Iterator[Tuple[int, int]]:
